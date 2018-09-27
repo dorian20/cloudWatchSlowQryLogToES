@@ -1,0 +1,26 @@
+{
+  "name": "lps-lambda-cloudwatchslowqrylogtoes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.253.1",
+    "lodash": "^4.17.10",
+    "moment-timezone": "^0.5.17",
+    "sql-formatter": "^2.3.1",
+    "moment": "^2.22.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://git-codecommit.ap-northeast-1.amazonaws.com/v1/repos/lps-lambda-cloudWatchSlowQryLogToES"
+  },
+  "author": "@nadir93",
+  "license": "ISC"
+}

@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: An AWS Serverless Specification template describing your function.
+Parameters:
+  TrafficShiftType:
+    Type: String
+Resources:
+  cloudWatchSlowQryLogToES:
+    Properties:
+      AutoPublishAlias: live
+      CodeUri: s3://ellt.lambda.lotte.net/541bbbb980c42a73b74f6c363b83e982
+      DeploymentPreference:
+        Type:
+          Ref: TrafficShiftType
+      Description: ''
+      Environment:
+        Variables:
+          DEBUG_LOG: 'true'
+          ES_ENDPOINT: https://search-es-ltcm-ellt-prd-n7idi5djymqmo72y5zocfdkmue.ap-northeast-2.es.amazonaws.com
+          ES_REGION: ap-northeast-2
+          EXCP_SQL_ID: DBA
+          SNSTopicLists: attr,campaign,cca,channel,common,delivery,display,goods,icms,members,order,payment,search,settle,tms,vendor
+          SNS_ENDPOINT_PREFIX: arn:aws:sns:ap-northeast-2:430340954761:slowQuery_
+          hostFilterKeywords: rdsadmin
+          queryFilterKeywords: performance_schema,information_schema,mysql
+      FunctionName: cloudWatchSlowQryLogToES
+      Handler: index.handler
+      MemorySize: 128
+      Role: arn:aws:iam::430340954761:role/LambdaExecute
+      Runtime: nodejs8.10
+      Timeout: 3
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31

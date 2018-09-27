@@ -1,0 +1,41 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+
+# Parameters are CloudFormation features to pass input
+# to your template when you create a stack
+Parameters:
+    TrafficShiftType:
+        Type: String
+
+Resources:
+  cloudWatchSlowQryLogToES:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      CodeUri: ../
+      Description: ''
+      MemorySize: 128
+      Timeout: 3
+      Role: 'arn:aws:iam::430340954761:role/LambdaExecute'
+      FunctionName: cloudWatchSlowQryLogToES
+      Environment:
+        Variables:
+          ES_REGION: ap-northeast-2
+          ES_ENDPOINT: >-
+            https://search-es-ltcm-ellt-prd-n7idi5djymqmo72y5zocfdkmue.ap-northeast-2.es.amazonaws.com
+          queryFilterKeywords: 'performance_schema'
+          hostFilterKeywords: 'rdsadmin'
+          EXCP_SQL_ID: DBA
+          SNS_ENDPOINT_PREFIX: 'arn:aws:sns:ap-northeast-2:430340954761:slowQuery_'
+          DEBUG_LOG: 'true'
+          SNSTopicLists: >-
+            attr,campaign,cca,channel,common,delivery,display,goods,icms,members,order,payment,search,settle,tms,vendor
+
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: !Ref TrafficShiftType #Canary10Percent10Minutes, Linear10PercentEvery1Minute 
+
+
+

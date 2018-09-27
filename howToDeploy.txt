@@ -1,0 +1,83 @@
+
+//cloudformation 배포하기
+
+//package
+
+aws cloudformation package --template-file ./deploy/cloudWatchSlowQryLogToES-ELLTDEV.yaml --output-template-file serverless-output.yaml \
+   --s3-bucket elltdev.lambda.lotte.net --profile crossaccount_seoul_ellt_dev
+
+aws cloudformation package --template-file ./deploy/cloudWatchSlowQryLogToES-ELLTTST.yaml --output-template-file serverless-output.yaml \
+   --s3-bucket ellttst.lambda.lotte.net --profile crossaccount_seoul_ellt_tst
+
+aws cloudformation package --template-file ./deploy/cloudWatchSlowQryLogToES-B2TST.yaml --output-template-file serverless-output.yaml \
+   --s3-bucket b2tst.lambda.lotte.net --profile crossaccount_seoul_b2_tst  
+
+aws cloudformation package --template-file ./deploy/cloudWatchSlowQryLogToES-ELLTPRD.yaml --output-template-file serverless-output.yaml \
+   --s3-bucket ellt.lambda.lotte.net --profile crossaccount_seoul_ellt_prd
+
+aws cloudformation package --template-file ./deploy/cloudWatchSlowQryLogToES-B2PRD.yaml --output-template-file serverless-output.yaml \
+   --s3-bucket b2.lambda.lotte.net --profile crossaccount_seoul_b2_prd 
+
+//deploy
+
+sam deploy --template-file ./serverless-output.yaml \
+   --stack-name cloudWatchSlowQryLogToES-ELLTDEV-STACK --capabilities CAPABILITY_IAM --profile crossaccount_seoul_ellt_dev --parameter TrafficShiftType=AllAtOnce      
+
+aws cloudformation deploy --template-file ./serverless-output.yaml \
+   --stack-name cloudWatchSlowQryLogToES-ELLTTST-STACK --capabilities CAPABILITY_IAM --profile crossaccount_seoul_ellt_tst --parameter TrafficShiftType=AllAtOnce   
+
+aws cloudformation deploy --template-file ./serverless-output.yaml \
+   --stack-name cloudWatchSlowQryLogToES-ELLTPRD-STACK --capabilities CAPABILITY_IAM --profile crossaccount_seoul_ellt_prd --parameter TrafficShiftType=AllAtOnce   
+
+aws cloudformation deploy --template-file ./serverless-output.yaml \
+   --stack-name cloudWatchSlowQryLogToES-B2PRD-STACK --capabilities CAPABILITY_IAM --profile crossaccount_seoul_b2_prd --parameter TrafficShiftType=AllAtOnce   
+
+
+
+.aws credentials
+
+[crossaccount_tokyo_b2_dev]
+role_arn = arn:aws:iam::087518667058:role/B2_IA
+source_profile = default
+region = ap-northeast-1
+
+[crossaccount_tokyo_elltdev]
+role_arn = arn:aws:iam::515303172277:role/B2_IA
+source_profile = default
+region = ap-northeast-1
+
+[crossaccount_seoul_b2_dev]
+role_arn = arn:aws:iam::087518667058:role/B2_IA
+source_profile = default
+region = ap-northeast-2
+
+[crossaccount_seoul_ellt_dev]
+role_arn = arn:aws:iam::515303172277:role/B2_IA
+source_profile = default
+region = ap-northeast-2
+
+[crossaccount_seoul_elasticsearch]
+role_arn = arn:aws:iam::877551073942:role/B2_IA
+source_profile = default
+region = ap-northeast-2
+
+[crossaccount_seoul_b2_tst]
+role_arn = arn:aws:iam::885426109155:role/B2_IA
+source_profile = default
+region = ap-northeast-2
+
+[crossaccount_seoul_ellt_tst]
+role_arn = arn:aws:iam::022222764296:role/B2_IA
+source_profile = default
+region = ap-northeast-2
+
+[crossaccount_seoul_b2_prd]
+role_arn = arn:aws:iam::449512021474:role/B2_IA
+source_profile = default
+region = ap-northeast-2
+
+[crossaccount_seoul_ellt_prd]
+role_arn = arn:aws:iam::430340954761:role/B2_IA
+source_profile = default
+region = ap-northeast-2
+

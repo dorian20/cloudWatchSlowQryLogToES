@@ -1,0 +1,39 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+
+# Parameters are CloudFormation features to pass input
+# to your template when you create a stack
+Parameters:
+    TrafficShiftType:
+        Type: String
+
+Resources:
+  cloudWatchSlowQryLogToES:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      CodeUri: ../
+      Description: ''
+      MemorySize: 128
+      Timeout: 3
+      Role: 'arn:aws:iam::885426109155:role/LambdaExecute'
+      FunctionName: cloudWatchSlowQryLogToES
+      Environment:
+        Variables:
+          DEBUG_LOG: 'true'
+          ES_ENDPOINT: >-
+            https://search-es-ltcm-ellt-tst-t47rlb6triesyk2oq4ykgs7qii.ap-northeast-2.es.amazonaws.com
+          ES_REGION: ap-northeast-2
+          EXCP_SQL_ID: >-
+            selectUserOrgnInfoList,selectSystemBoardInfoList,selectMenuUseLogMenuInfoList,selectEntprzUserMenuAuthHst,selectSystemBoardInfoUpList,selectUserLogInfoList,selectUserMenuScreenButtonList,selectUserLogDetailInfoList,selectEntprzMenuScreenButtonList,IcmsScreenReadOnlyDAO.selectScreenInfoListPopup,selectCscoInfoList,selectMenuAuthHst,insertPersonalInfoAuthHst,selectCenterNmAndCdList,selectCardcoMid,selectMainRecentUseMenuInfoList
+          SNSTopicLists: >-
+            attr,campaign,cca,channel,common,delivery,display,goods,icms,members,order,payment,search,settle,tms,vendor
+          SNS_ENDPOINT_PREFIX: 'arn:aws:sns:ap-northeast-2:885426109155:slowQuery_'
+          hostFilterKeywords: 'rdsadmin,pocuser,b2_dms,btchuser,b2_dba,b2_dev'
+          queryFilterKeywords: 'performance_schema,information_schema,mysql,rdsadmin'
+
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: !Ref TrafficShiftType #Canary10Percent10Minutes, Linear10PercentEvery1Minute 
